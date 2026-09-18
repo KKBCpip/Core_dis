@@ -35,7 +35,7 @@ class CADViewerApp:
         """配置顶部菜单栏"""
         try:
             self.add_menu('测量工具')
-            self.add_function('测量整体体积', lambda: self.measure_volume())
+            self.add_function('测量体积', lambda: self.measure_volume())
         except Exception as e:
             print(f"[Error] 菜单创建失败: {e}")
 
@@ -44,15 +44,14 @@ class CADViewerApp:
         try:
             if not shape_list:
                 return
-                
-            clicked_shape = shape_list[0]
-            length = GeometryAnalyzer.get_edge_length(clicked_shape)
-            
-            if length > 0:
-                print(f"[Measure] 选中边的长度: {length:.4f} mm")
+
+            result = GeometryAnalyzer.measure(shape_list[0])
+            if result is None:
+                print("[Info] 当前选择不支持测量，请选择边、面或实体。")
                 return
-                
-            print("[Info] 请精确点击模型的【边】以测量长度。")
+
+            measure_name, value, unit = result
+            print(f"[Measure] {measure_name}: {value:.4f} {unit}")
         except Exception as e:
             print(f"[Error] 点击回调出错: {e}")
 
