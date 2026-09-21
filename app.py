@@ -11,14 +11,14 @@ class CADViewerApp:
             self.display, self.start_display, self.add_menu, self.add_function = init_display()
             
             # 2. 创建测试模型
-            self.test_shape = BRepPrimAPI_MakeBox(100.0, 50.0, 30.0).Shape()
+            self.test_shape = BRepPrimAPI_MakeBox(50.0, 50.0, 50.0).Shape()
             
             # 3. 将模型加入场景
             self.display.DisplayShape(self.test_shape, update=True)
             
             # 4. 注册鼠标选择回调函数
             self.display.register_select_callback(self.on_shape_click)
-            
+           
             # 5. 添加自定义菜单
             self.setup_menu()
             
@@ -34,8 +34,12 @@ class CADViewerApp:
     def setup_menu(self):
         """配置顶部菜单栏"""
         try:
+            # 必须先添加菜单容器
             self.add_menu('测量工具')
-            self.add_function('测量体积', lambda: self.measure_volume())
+            # 必须使用 add_function_to_menu，并且需要传入两个参数：
+            # 1. 菜单名 ('测量工具')
+            # 2. 绑定的功能函数 (self.measure_volume)
+            self.add_function('测量工具', self.measure_volume)
         except Exception as e:
             print(f"[Error] 菜单创建失败: {e}")
 
@@ -61,6 +65,7 @@ class CADViewerApp:
             vol = GeometryAnalyzer.get_shape_volume(self.test_shape)
             print(f"[Measure] 模型总体积: {vol:.4f} mm^3")
         except Exception as e:
+            traceback.print_exc()
             print(f"[Error] 计算体积出错: {e}")
 
     def run(self):
