@@ -87,8 +87,6 @@ if __name__ == "__main__":
         traceback.print_exc()
         input("按回车键退出...")
 
-# sdcbhhdcd
-
 
 
 
